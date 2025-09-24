@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/22516892/README.md)
 # Sprint2CSharp
 
 API RESTful em .NET para controle de clientes, veículos e pátios.  
@@ -24,11 +23,6 @@ Personalize o comando conforme seu ambiente.
 ### Windows (PowerShell)
 ```powershell
 $env:ConnectionStrings__OracleConnection = "User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=HOST:PORTA/SERVICE_NAME"
-```
-
-### Linux/macOS (bash)
-```bash
-export ConnectionStrings__OracleConnection="User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=HOST:PORTA/SERVICE_NAME"
 ```
 
 Exemplo comum (ajuste para o seu host/porta/service):
