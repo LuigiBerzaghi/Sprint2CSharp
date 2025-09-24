@@ -1,0 +1,13 @@
+﻿**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.log
+*.tmp
+**/publish/
+**/out/
+*.nupkg
+*.snupkg
+appsettings.Development.json
+appsettings.*.local.json

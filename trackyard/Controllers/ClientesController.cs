@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sprint1CSharp.Application.Common;
 using Sprint1CSharp.Data;
 using Sprint1CSharp.Models;
+using Sprint1CSharp.Application.Dtos;
 
 namespace Sprint1CSharp.Controllers;
 
@@ -74,20 +75,20 @@ public class ClientesController : ControllerBase
 
     /// <summary>Atualiza um cliente.</summary>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] Cliente dto)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateClienteDto dto)
     {
-        if (id != dto.Id) return BadRequest("ID do caminho difere do corpo.");
+        var entity = await _db.Clientes.FindAsync(id);
+        if (entity is null) return NotFound();
 
-        var exists = await _db.Clientes.AnyAsync(c => c.Id == id);
-        if (!exists) return NotFound();
-
-        var entry = _db.Entry(dto);
-        entry.State = EntityState.Modified;
-        entry.Property(c => c.Veiculos).IsModified = false;
+        entity.Nome    = dto.Nome;
+        entity.CPF     = dto.CPF;
+        entity.Email   = dto.Email;
+        entity.Endereco = dto.Endereco;
 
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
 
     /// <summary>Remove um cliente.</summary>
     [HttpDelete("{id:int}")]
