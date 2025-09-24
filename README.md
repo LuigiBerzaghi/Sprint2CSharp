@@ -30,10 +30,6 @@ Exemplo comum (ajuste para o seu host/porta/service):
 User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=oracle.seu-dominio.com:1521/orcl
 ```
 
-> A aplicação também aceita `ORACLE_CONNECTION` como fallback, se você preferir:
-> - PowerShell: `$env:ORACLE_CONNECTION = "User Id=..."`
-> - bash: `export ORACLE_CONNECTION="User Id=..."`
-
 ## ▶️ Como rodar
 
 Na pasta do projeto (onde está o `.csproj`):
@@ -105,17 +101,3 @@ http://localhost:{PORT}/swagger
 
 > Os **exemplos aparecem no Swagger** automaticamente (Operation Filter).  
 > Em **POST**, **não envie `id`** — o banco gera.
-
-## 🧪 Dicas de verificação rápida (pra nota)
-
-- No `/swagger`, confira:
-  - **Descriptions** nos endpoints e seus **parâmetros** (summary/param).
-  - **Example Value** nos **POST/PUT** (Clientes, Veículos, Pátios).
-  - **Schemas** dos modelos com descrições das propriedades.
-- Teste um CRUD completo (criar, listar, detalhar, atualizar, deletar) para cada entidade.
-
-## 🛠️ Solução de problemas
-
-- **ORA-00942 (tabela não existe)**: confirme que as tabelas foram criadas no **mesmo schema** do usuário da connection string.
-- **ORA-00904 ("Id" inválido)**: nomes de colunas devem estar em **UPPERCASE** (ex.: `ID`) e sem aspas no DDL.
-- **Sem acesso ao DB**: valide host/porta/service e firewall da sua base Oracle.
