@@ -1,14 +1,6 @@
 # Sprint2CSharp
 
-API RESTful em .NET para controle de clientes, veículos e pátios.  
-Inclui **Swagger/OpenAPI** com **descrição de endpoints e parâmetros**, **exemplos de payload** e **modelos de dados descritos**.
-
-## ✅ Requisitos (slides 7–9)
-
-- Swagger/OpenAPI configurado:
-  - Descrição de endpoints e parâmetros (via XML comments).
-  - Exemplos de payload (via `ExamplesOperationFilter`).
-  - Modelos de dados descritos (Schemas com summary das propriedades).
+API RESTful em .NET para a Mottu.
 
 ## 🚀 Pré-requisitos
 
@@ -17,22 +9,28 @@ Inclui **Swagger/OpenAPI** com **descrição de endpoints e parâmetros**, **exe
 
 ## 🔐 Configurar a Connection String (sem expor credenciais)
 
-Personalize o comando conforme seu ambiente.  
-> **Não** use seus dados reais no README. Substitua os placeholders `SEU_USUARIO`, `SUA_SENHA`, `HOST`, `PORTA` e `SERVICE_NAME`.
-
 ### Windows (PowerShell)
+
+Configure as variáveis de ambiente de acordo com suas credenciais:
+
 ```powershell
 $env:ConnectionStrings__OracleConnection = "User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=HOST:PORTA/SERVICE_NAME"
 ```
 
-Exemplo comum (ajuste para o seu host/porta/service):
-```
-User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=oracle.seu-dominio.com:1521/orcl
-```
-
 ## ▶️ Como rodar
 
-Na pasta do projeto (onde está o `.csproj`):
+Clone o repositório no diretório desejado:
+
+```powershell
+git clone https://github.com/LuigiBerzaghi/Sprint2CSharp.git
+```
+
+Navegue até o diretório do projeto:
+
+```powershell
+cd Sprint2CSharp/trackyard
+```
+Restaure e execute o projeto:
 
 ```bash
 dotnet restore
@@ -45,8 +43,6 @@ Acesse o **Swagger** em:
 ```
 http://localhost:{PORT}/swagger
 ```
-
-> Se estiver em `Development`, a UI do Swagger já estará habilitada.
 
 ## 📚 Endpoints (resumo)
 
@@ -98,6 +94,3 @@ http://localhost:{PORT}/swagger
   "endereco": "Av. Lins de Vasconcelos, 1000"
 }
 ```
-
-> Os **exemplos aparecem no Swagger** automaticamente (Operation Filter).  
-> Em **POST**, **não envie `id`** — o banco gera.
