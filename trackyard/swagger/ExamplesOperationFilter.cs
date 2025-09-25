@@ -18,17 +18,29 @@ namespace Sprint1CSharp.Swagger
 
             OpenApiObject? example = null;
 
-            if (path.StartsWith("api/clientes") && (method == "POST" || method == "PUT"))
+            if (path.StartsWith("api/clientes") && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
+                    ["id"] = new OpenApiInteger (1),
                     ["nome"] = new OpenApiString("Luigi Berzaghi"),
                     ["cpf"] = new OpenApiString("123.456.789-00"),
                     ["email"] = new OpenApiString("luigi@example.com"),
                     ["endereco"] = new OpenApiString("Guarulhos - SP")
                 };
             }
-            else if (path.StartsWith("api/veiculos") && (method == "POST" || method == "PUT"))
+            else if (path.StartsWith("api/clientes") && (method == "PUT"))
+            {
+                example = new OpenApiObject
+                {
+                    ["id"] = new OpenApiInteger (1),
+                    ["nome"] = new OpenApiString("Luigi Berzaghi"),
+                    ["cpf"] = new OpenApiString("123.456.789-00"),
+                    ["email"] = new OpenApiString("luigi@example.com"),
+                    ["endereco"] = new OpenApiString("Santo André - SP")
+                };
+            }
+            else if (path.StartsWith("api/veiculos") && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
@@ -39,7 +51,18 @@ namespace Sprint1CSharp.Swagger
                     ["clienteId"] = new OpenApiInteger(1)
                 };
             }
-            else if (path.StartsWith("api/patios") && (method == "POST" || method == "PUT"))
+            else if (path.StartsWith("api/veiculos") && (method == "PUT"))
+            {
+                example = new OpenApiObject
+                {
+                    ["modelo"] = new OpenApiString("CG 160"),
+                    ["placa"]  = new OpenApiString("ABC1D23"),
+                    ["cor"]    = new OpenApiString("Azul"),
+                    ["ano"]    = new OpenApiString("2022"),
+                    ["clienteId"] = new OpenApiInteger(1)
+                };
+            }            
+            else if (path.StartsWith("api/patios") && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
@@ -47,6 +70,16 @@ namespace Sprint1CSharp.Swagger
                     ["endereco"] = new OpenApiString("Av. Lins de Vasconcelos, 1000")
                 };
             }
+            else if (path.StartsWith("api/patios") && (method == "PUT"))
+            {
+                example = new OpenApiObject
+                {
+                    ["nome"]     = new OpenApiString("Pátio Central"),
+                    ["endereco"] = new OpenApiString("Av. Lins de Vasconcelos, 5790")
+                };
+            }
+
+
 
             if (example is null) return;
 

@@ -49,7 +49,7 @@ public class PatiosController : ControllerBase
         return Ok(ToDto(p));
     }
 
-    /// <summary>Lista pátios com paginação.</summary>
+    /// <summary>Cria um pátio.</summary>
     [HttpPost]
     public async Task<ActionResult<PatioDto>> Create([FromBody] CreatePatioDto dto)
     {
