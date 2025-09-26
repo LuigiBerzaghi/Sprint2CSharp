@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing;
 using Sprint1CSharp.Application.Common;
 using Sprint1CSharp.Data;
 using Sprint1CSharp.Models;
@@ -13,12 +14,16 @@ namespace Sprint1CSharp.Controllers;
 public class VeiculosController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly LinkGenerator _links;
 
-    public VeiculosController(AppDbContext db) => _db = db;
+    public VeiculosController(AppDbContext db, LinkGenerator links)
+    {
+        _db = db; _links = links;
+    }
 
     /// <summary>Lista veículos com paginação</summary>
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Veiculo>>> GetAll(
+    public async Task<ActionResult<PagedResult<VeiculoDto>>> GetAll(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? placa = null)
@@ -42,32 +47,37 @@ public class VeiculosController : ControllerBase
 
         Response.Headers["X-Total-Count"] = total.ToString();
 
-        return Ok(new PagedResult<Veiculo> {
-            Items = data, Page = page, PageSize = pageSize, TotalItems = total
+        var dtos = data.Select(ToDto);
+
+        return Ok(new PagedResult<VeiculoDto> {
+            Items = dtos, Page = page, PageSize = pageSize, TotalItems = total
         });
     }
 
     /// <summary>Busca um veículo por ID.</summary>
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<ActionResult<VeiculoDto>> GetById(int id)
     {
         var entity = await _db.Veiculos.AsNoTracking().Include(v => v.Cliente).FirstOrDefaultAsync(x => x.Id == id);
-        return entity is null ? NotFound() : Ok(entity);
+        return entity is null ? NotFound() : Ok(ToDto(entity));
     }
     /// <summary>Cria um veículo.</summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] Veiculo dto)
+    public async Task<ActionResult<VeiculoDto>> Create([FromBody] CreateVeiculoDto dto)
     {
-        // garante vínculo coerente
-        if (dto.Cliente is not null)
+        var entity = new Veiculo
         {
-            // se vier cliente aninhado, usamos apenas o ClienteId
-            dto.Cliente = null;
-        }
+            Modelo = dto.Modelo,
+            Placa = dto.Placa,
+            Cor = dto.Cor,
+            Ano = dto.Ano,
+            ClienteId = dto.ClienteId
+        };
 
-        _db.Veiculos.Add(dto);
+        _db.Veiculos.Add(entity);
         await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+        var result = ToDto(entity);
+        return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
     }
 
     /// <summary>Atualiza um veículo.</summary>
@@ -81,6 +91,7 @@ public class VeiculosController : ControllerBase
         entity.Placa  = dto.Placa;
         entity.Cor    = dto.Cor;
         entity.Ano    = dto.Ano;
+        if (dto.ClienteId.HasValue) entity.ClienteId = dto.ClienteId.Value;
 
         await _db.SaveChangesAsync();
         return NoContent();
@@ -95,5 +106,17 @@ public class VeiculosController : ControllerBase
         _db.Veiculos.Remove(entity);
         await _db.SaveChangesAsync();
         return NoContent();
+    }
+
+    private VeiculoDto ToDto(Veiculo v)
+    {
+        var self = _links.GetPathByAction(HttpContext, nameof(GetById), values: new { id = v.Id }) ?? $"/api/veiculos/{v.Id}";
+        var links = new[]
+        {
+            new LinkDto("self", self, "GET"),
+            new LinkDto("update", self, "PUT"),
+            new LinkDto("delete", self, "DELETE")
+        };
+        return new VeiculoDto(v.Id, v.Modelo ?? string.Empty, v.Placa ?? string.Empty, v.Cor ?? string.Empty, v.Ano ?? string.Empty, v.ClienteId, links);
     }
 }

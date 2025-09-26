@@ -22,7 +22,6 @@ namespace Sprint1CSharp.Swagger
             {
                 example = new OpenApiObject
                 {
-                    ["id"] = new OpenApiInteger (1),
                     ["nome"] = new OpenApiString("Luigi Berzaghi"),
                     ["cpf"] = new OpenApiString("123.456.789-00"),
                     ["email"] = new OpenApiString("luigi@example.com"),
@@ -33,7 +32,6 @@ namespace Sprint1CSharp.Swagger
             {
                 example = new OpenApiObject
                 {
-                    ["id"] = new OpenApiInteger (1),
                     ["nome"] = new OpenApiString("Luigi Berzaghi"),
                     ["cpf"] = new OpenApiString("123.456.789-00"),
                     ["email"] = new OpenApiString("luigi@example.com"),

@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing;
 using Sprint1CSharp.Application.Common;
 using Sprint1CSharp.Data;
 using Sprint1CSharp.Models;
@@ -13,11 +14,15 @@ namespace Sprint1CSharp.Controllers;
 public class ClientesController : ControllerBase
 {
     private readonly AppDbContext _db;
-    public ClientesController(AppDbContext db) => _db = db;
+    private readonly LinkGenerator _links;
+    public ClientesController(AppDbContext db, LinkGenerator links)
+    {
+        _db = db; _links = links;
+    }
 
     /// <summary>Lista clientes com paginação e filtro opcional por nome.</summary>
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Cliente>>> GetAll(
+    public async Task<ActionResult<PagedResult<ClienteDto>>> GetAll(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? nome = null)
@@ -42,9 +47,11 @@ public class ClientesController : ControllerBase
 
         Response.Headers["X-Total-Count"] = total.ToString();
 
-        return Ok(new PagedResult<Cliente>
+        var dtos = items.Select(ToDto);
+
+        return Ok(new PagedResult<ClienteDto>
         {
-            Items = items,
+            Items = dtos,
             Page = page,
             PageSize = pageSize,
             TotalItems = total
@@ -53,24 +60,27 @@ public class ClientesController : ControllerBase
 
     /// <summary>Busca cliente pelo ID.</summary>
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Cliente>> GetById(int id)
+    public async Task<ActionResult<ClienteDto>> GetById(int id)
     {
         var entity = await _db.Clientes.AsNoTracking().Include(c => c.Veiculos).FirstOrDefaultAsync(c => c.Id == id);
-        return entity is null ? NotFound() : Ok(entity);
+        return entity is null ? NotFound() : Ok(ToDto(entity));
     }
 
     /// <summary>Cria um cliente.</summary>
     [HttpPost]
-    public async Task<ActionResult<Cliente>> Create([FromBody] Cliente dto)
+    public async Task<ActionResult<ClienteDto>> Create([FromBody] CreateClienteDto dto)
     {
-        if (dto.Veiculos is not null)
+        var entity = new Cliente
         {
-            foreach (var v in dto.Veiculos) v.Cliente = null;
-        }
-
-        _db.Clientes.Add(dto);
+            Nome = dto.Nome,
+            CPF = dto.CPF,
+            Email = dto.Email,
+            Endereco = dto.Endereco
+        };
+        _db.Clientes.Add(entity);
         await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+        var result = ToDto(entity);
+        return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
     }
 
     /// <summary>Atualiza um cliente.</summary>
@@ -99,5 +109,17 @@ public class ClientesController : ControllerBase
         _db.Clientes.Remove(entity);
         await _db.SaveChangesAsync();
         return NoContent();
+    }
+
+    private ClienteDto ToDto(Cliente c)
+    {
+        var self = _links.GetPathByAction(HttpContext, nameof(GetById), values: new { id = c.Id }) ?? $"/api/clientes/{c.Id}";
+        var links = new[]
+        {
+            new LinkDto("self", self, "GET"),
+            new LinkDto("update", self, "PUT"),
+            new LinkDto("delete", self, "DELETE")
+        };
+        return new ClienteDto(c.Id, c.Nome ?? string.Empty, c.CPF ?? string.Empty, c.Email ?? string.Empty, c.Endereco, links);
     }
 }
