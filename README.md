@@ -69,6 +69,7 @@ http://localhost:{PORT}/swagger
 ### Clientes (POST/PUT body)
 ```json
 {
+  "id" : 1,
   "nome": "Luigi Berzaghi",
   "cpf": "123.456.789-00",
   "email": "luigi@example.com",
