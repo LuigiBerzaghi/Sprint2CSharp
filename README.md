@@ -121,6 +121,14 @@ http://localhost:{PORT}/swagger
 
 ---
 
+Para parar a aplicação, basta pressionar:
+
+```
+cntrl + c
+```
+
+---
+
 ## 👥 Equipe
 
 - RM555516 - Luigi Berzaghi  
