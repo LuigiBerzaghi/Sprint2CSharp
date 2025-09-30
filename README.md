@@ -118,3 +118,11 @@ http://localhost:{PORT}/swagger
   "endereco": "Av. Lins de Vasconcelos, 1000"
 }
 ```
+
+---
+
+## 👥 Equipe
+
+- RM555516 - Luigi Berzaghi  
+- RM559093 - Guilherme Pelissari   
+- RM558445 - Cauã dos Santos 
