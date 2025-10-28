@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sprint1CSharp.Data;
@@ -13,6 +15,19 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 {
     opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     opt.JsonSerializerOptions.WriteIndented = true;
+});
+
+// API Versioning services
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+builder.Services.AddVersionedApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV";
+    setup.SubstituteApiVersionInUrl = true;
 });
 
 // Swagger
@@ -30,8 +45,21 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
     if (File.Exists(xmlPath)) c.IncludeXmlComments(xmlPath);
     c.OperationFilter<ExamplesOperationFilter>();
+    // Swagger security for API Key
+    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Description = "Header X-API-KEY",
+        Name = "X-API-KEY",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { new OpenApiSecurityScheme{ Reference = new OpenApiReference{ Type = ReferenceType.SecurityScheme, Id = "ApiKey" } }, new List<string>() }
+    });
 });
-
+if (!builder.Environment.IsEnvironment("Testing"))
+{
 // Connection string (env first)
 string? conn =
     Environment.GetEnvironmentVariable("ORACLE_CONNECTION")
@@ -47,6 +75,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseOracle(conn);
 });
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseInMemoryDatabase("testing"));
+}
+
+// Health checks (DB)
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>("database");
+
+// API Key authentication/authorization
+builder.Services.AddAuthentication("ApiKey")
+    .AddScheme<AuthenticationSchemeOptions, Sprint1CSharp.Security.ApiKeyAuthenticationHandler>("ApiKey", _ => { });
+builder.Services.AddAuthorization();
+
+// ML.NET prediction service
+builder.Services.AddSingleton<Sprint1CSharp.Services.Prediction.IPredictionService, Sprint1CSharp.Services.Prediction.PredictionService>();
 
 var app = builder.Build();
 
@@ -71,8 +117,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Health endpoint
+app.MapHealthChecks("/health");
+
 app.Run();
+
+public partial class Program { }

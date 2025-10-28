@@ -44,25 +44,44 @@ Acesse o **Swagger** em:
 http://localhost:{PORT}/swagger
 ```
 
+## Auth
+Para autenticar e ter acesso aos métodos, é necessário realizar a autenticação via API-KEY.
+- Valor padrão em dev: `dev-api-key` (configure `ApiKey` em `trackyard/appsettings.json` ou a env `API_KEY`).
+
+## Como executar os testes
+
+Os testes não dependem de Oracle. Utilizam banco em memória e `WebApplicationFactory`.
+
+Comandos:
+
+```bash
+dotnet restore
+dotnet test
+```
+
+
 ## 📚 Endpoints (resumo)
 
-- `GET /api/Clientes` – lista com paginação e filtro por nome  
-- `GET /api/Clientes/{id}` – detalhe  
-- `POST /api/Clientes` – cria  
-- `PUT /api/Clientes/{id}` – atualiza  
-- `DELETE /api/Clientes/{id}` – remove
+- `GET /api/v1/Clientes` – lista com paginação e filtro por nome  
+- `GET /api/v1/Clientes/{id}` – detalhe  
+- `POST /api/v1/Clientes` – cria  
+- `PUT /api/v1/Clientes/{id}` – atualiza  
+- `DELETE /api/v1/Clientes/{id}` – remove
 
-- `GET /api/Veiculos` – lista com paginação e filtro por placa  
-- `GET /api/Veiculos/{id}` – detalhe  
-- `POST /api/Veiculos` – cria  
-- `PUT /api/Veiculos/{id}` – atualiza  
-- `DELETE /api/Veiculos/{id}` – remove
+- `GET /api/v1/Veiculos` – lista com paginação e filtro por placa  
+- `GET /api/v1/Veiculos/{id}` – detalhe  
+- `POST /api/v1/Veiculos` – cria  
+- `PUT /api/v1/Veiculos/{id}` – atualiza  
+- `DELETE /api/v1/Veiculos/{id}` – remove
 
-- `GET /api/Patios` – lista com paginação  
-- `GET /api/Patios/{id}` – detalhe  
-- `POST /api/Patios` – cria  
-- `PUT /api/Patios/{id}` – atualiza  
-- `DELETE /api/Patios/{id}` – remove
+- `GET /api/v1/Patios` – lista com paginação  
+- `GET /api/v1/Patios/{id}` – detalhe  
+- `POST /api/v1/Patios` – cria  
+- `PUT /api/v1/Patios/{id}` – atualiza  
+- `DELETE /api/v1/Patios/{id}` – remove
+
+- `POST /api/v1/ml/predict-risk` - retorna uma classificação de risco
+- `GET /health` - retorna a "saúde" da aplicação
 
 ## ✍️ Exemplos de payload (POST/PUT)
 
@@ -94,4 +113,32 @@ http://localhost:{PORT}/swagger
   "nome": "Pátio Central",
   "endereco": "Av. Lins de Vasconcelos, 1000"
 }
+```
+
+### ML.NET (POST body)
+```json
+{
+  "ano": 2022,
+  "quilometragem": 1000
+}
+```
+
+irá retornar:
+```json
+{ 
+  "predicted": false,
+  "probability": 0.23 
+}
+```
+
+### Health (GET)
+Caso o app e DB estejam OK, retonará:
+```json
+Healthy
+```
+
+caso contrário:
+
+```json 
+Unhealthy
 ```

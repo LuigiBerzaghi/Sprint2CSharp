@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Routing;
 using Sprint1CSharp.Application.Common;
@@ -10,7 +11,9 @@ using Sprint1CSharp.Models;
 namespace Sprint1CSharp.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Authorize(AuthenticationSchemes = "ApiKey")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class PatiosController : ControllerBase
 {
     private readonly AppDbContext _db;
