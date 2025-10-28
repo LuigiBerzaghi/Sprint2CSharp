@@ -1,6 +1,30 @@
-# Sprint2CSharp
+# Trackyard
 
 API RESTful em .NET para a Mottu.
+
+---
+
+## Justificativa da Arquitetura
+
+A arquitetura escolhida foi pensada para garantir integração, escalabilidade e confiabilidade da solução. Ela combina diferentes camadas e tecnologias que se complementam:
+
+- Captura de dados (IoT/Visão Computacional): responsável por coletar informações em tempo real de sensores e câmeras, garantindo que eventos relevantes sejam identificados automaticamente.
+
+- Backend e Banco em Nuvem: concentra o processamento e armazenamento seguro dos dados, disponibilizando APIs que padronizam a comunicação com outras partes do sistema. O uso de banco em nuvem garante alta disponibilidade, facilidade de manutenção e escalabilidade conforme a demanda cresce.
+
+- Aplicação Web e Mobile: oferecem uma interface acessível e intuitiva para usuários finais, permitindo consultas, cadastros e acompanhamento dos ativos em qualquer lugar.
+
+- A decisão por essa arquitetura se justifica por três pontos principais:
+
+- Modularidade e Flexibilidade: cada camada (captura, backend, frontend) pode ser evoluída de forma independente, permitindo que melhorias ou novas funcionalidades sejam adicionadas sem comprometer o restante da solução.
+
+- Escalabilidade e Desempenho: a escolha de tecnologias em nuvem e APIs garante que o sistema suporte aumento de usuários e de dados sem perda de performance.
+
+- Confiabilidade e Segurança: centralizar os dados no backend evita inconsistências, enquanto a comunicação padronizada entre os módulos garante integridade das informações.
+
+Assim, a arquitetura adotada não só resolve os desafios atuais de monitoramento e gestão, mas também oferece uma base sólida para expansões futuras, alinhando-se às necessidades de negócios que buscam eficiência, inovação e crescimento sustentável.
+
+---
 
 ## 🚀 Pré-requisitos
 
@@ -88,7 +112,6 @@ dotnet test
 ### Clientes (POST/PUT body)
 ```json
 {
-  "id" : 1,
   "nome": "Luigi Berzaghi",
   "cpf": "123.456.789-00",
   "email": "luigi@example.com",
@@ -114,6 +137,22 @@ dotnet test
   "endereco": "Av. Lins de Vasconcelos, 1000"
 }
 ```
+
+---
+
+Para parar a aplicação, basta pressionar:
+
+```
+cntrl + c
+```
+
+---
+
+## 👥 Equipe
+
+- RM555516 - Luigi Berzaghi  
+- RM559093 - Guilherme Pelissari   
+- RM558445 - Cauã dos Santos 
 
 ### ML.NET (POST body)
 ```json
