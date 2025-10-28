@@ -54,10 +54,21 @@ Navegue até o diretório do projeto:
 ```powershell
 cd Sprint2CSharp/trackyard
 ```
-Restaure e execute o projeto:
+
+### Como executar os testes
+
+Os testes não dependem de Oracle. Utilizam banco em memória e `WebApplicationFactory`.
+
+Comandos:
 
 ```bash
 dotnet restore
+dotnet test
+```
+
+Execute o projeto:
+
+```bash
 dotnet run
 ```
 
@@ -71,17 +82,6 @@ http://localhost:{PORT}/swagger
 ## Auth
 Para autenticar e ter acesso aos métodos, é necessário realizar a autenticação via API-KEY.
 - Valor padrão em dev: `dev-api-key` (configure `ApiKey` em `trackyard/appsettings.json` ou a env `API_KEY`).
-
-## Como executar os testes
-
-Os testes não dependem de Oracle. Utilizam banco em memória e `WebApplicationFactory`.
-
-Comandos:
-
-```bash
-dotnet restore
-dotnet test
-```
 
 
 ## 📚 Endpoints (resumo)
@@ -138,21 +138,6 @@ dotnet test
 }
 ```
 
----
-
-Para parar a aplicação, basta pressionar:
-
-```
-cntrl + c
-```
-
----
-
-## 👥 Equipe
-
-- RM555516 - Luigi Berzaghi  
-- RM559093 - Guilherme Pelissari   
-- RM558445 - Cauã dos Santos 
 
 ### ML.NET (POST body)
 ```json
@@ -180,4 +165,21 @@ caso contrário:
 
 ```json 
 Unhealthy
+
 ```
+
+---
+
+Para parar a aplicação, basta pressionar:
+
+```
+cntrl + c
+```
+
+---
+
+## 👥 Equipe
+
+- RM555516 - Luigi Berzaghi  
+- RM559093 - Guilherme Pelissari   
+- RM558445 - Cauã dos Santos 
