@@ -15,10 +15,17 @@ namespace Sprint1CSharp.Swagger
 
             var path = context.ApiDescription.RelativePath?.ToLower() ?? "";
             var method = context.ApiDescription.HttpMethod?.ToUpper() ?? "";
+            var controller = context.ApiDescription.ActionDescriptor?.RouteValues.TryGetValue("controller", out var ctrl)
+                == true ? ctrl?.ToLower() : null;
 
             OpenApiObject? example = null;
 
-            if (path.StartsWith("api/clientes") && (method == "POST"))
+            // Support versioned routes like api/v1/... and conventional ones
+            bool isClientes = (controller == "clientes") || path.Contains("/clientes");
+            bool isVeiculos = (controller == "veiculos") || path.Contains("/veiculos");
+            bool isPatios   = (controller == "patios")   || path.Contains("/patios");
+
+            if (isClientes && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
@@ -28,7 +35,7 @@ namespace Sprint1CSharp.Swagger
                     ["endereco"] = new OpenApiString("Guarulhos - SP")
                 };
             }
-            else if (path.StartsWith("api/clientes") && (method == "PUT"))
+            else if (isClientes && (method == "PUT"))
             {
                 example = new OpenApiObject
                 {
@@ -38,7 +45,7 @@ namespace Sprint1CSharp.Swagger
                     ["endereco"] = new OpenApiString("Santo André - SP")
                 };
             }
-            else if (path.StartsWith("api/veiculos") && (method == "POST"))
+            else if (isVeiculos && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
@@ -49,7 +56,7 @@ namespace Sprint1CSharp.Swagger
                     ["clienteId"] = new OpenApiInteger(1)
                 };
             }
-            else if (path.StartsWith("api/veiculos") && (method == "PUT"))
+            else if (isVeiculos && (method == "PUT"))
             {
                 example = new OpenApiObject
                 {
@@ -60,7 +67,7 @@ namespace Sprint1CSharp.Swagger
                     ["clienteId"] = new OpenApiInteger(1)
                 };
             }            
-            else if (path.StartsWith("api/patios") && (method == "POST"))
+            else if (isPatios && (method == "POST"))
             {
                 example = new OpenApiObject
                 {
@@ -68,7 +75,7 @@ namespace Sprint1CSharp.Swagger
                     ["endereco"] = new OpenApiString("Av. Lins de Vasconcelos, 1000")
                 };
             }
-            else if (path.StartsWith("api/patios") && (method == "PUT"))
+            else if (isPatios && (method == "PUT"))
             {
                 example = new OpenApiObject
                 {
@@ -76,8 +83,15 @@ namespace Sprint1CSharp.Swagger
                     ["endereco"] = new OpenApiString("Av. Lins de Vasconcelos, 5790")
                 };
             }
-
-
+            // ML predict-risk (POST)
+            else if (path.Contains("/ml") && path.Contains("predict-risk") && (method == "POST"))
+            {
+                example = new OpenApiObject
+                {
+                    ["ano"] = new OpenApiInteger(2022),
+                    ["quilometragem"] = new OpenApiInteger(1000)
+                };
+            }
 
             if (example is null) return;
 
